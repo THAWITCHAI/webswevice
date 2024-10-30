@@ -9,6 +9,13 @@ app.get('/', (req: Request, res: Response) => {
     })
 });
 
+app.post('/login',(req:Request,res:Response)=>{
+    const { username, password } = req.body;
+    res.json({
+        message: `Logged in as ${username}`
+    })
+})
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
