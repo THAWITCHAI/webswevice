@@ -1,13 +1,12 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
-    "module": "commonjs",
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true
+    "target": "ES2020", // เปลี่ยนตามความต้องการของคุณ
+    "module": "commonjs", // สำหรับ Node.js
+    "outDir": "./dist", // ที่จะส่งออกไฟล์ที่คอมไพล์
+    "rootDir": "./src", // ที่ที่ไฟล์ต้นฉบับตั้งอยู่
+    "strict": true, // เปิดใช้งานการตรวจสอบประเภทที่เข้มงวด
+    "esModuleInterop": true // เปิดใช้งานความเข้ากันได้กับโมดูล ES
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  "include": ["src/**/*"], // รวมไฟล์ TypeScript ทั้งหมดใน src
+  "exclude": ["node_modules"] // ไม่รวมโฟลเดอร์ node_modules
 }
