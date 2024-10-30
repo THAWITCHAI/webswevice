@@ -27,11 +27,13 @@ appPath.get('/users', (req: Request, res: Response) => {
                 if (!users.exists()) {
                     res.status(404).json({ message: 'No Data' })
                 }
-                res.json([{
-                    data: {
+                res.json({
+                    data:[
+                         {
                         users
                     }
-                }])
+                    ]
+                })
             })
     } catch (error) {
         res.status(500).json({ message: 'No Data' })
@@ -46,11 +48,13 @@ appPath.get('/users/:id', (req: Request, res: Response) => {
                 if (!user.exists()) {
                     res.status(404).json({ message: 'No Data' })
                 }
-                res.json([{
-                    data: {
+                res.json({
+                    data: [
+                         {
                         users
                     }
-                }])
+                    ]
+                })
             })
             })
     } catch (error) {
