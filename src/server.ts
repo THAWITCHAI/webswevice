@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import { getDatabase, set, ref, get, update, remove, push, } from 'firebase/database'
 import { initializeApp } from 'firebase/app';
+import cors from 'cors
 
 const appPath = express();
 const PORT = process.env.PORT || 1234;
@@ -16,6 +17,7 @@ const db = getDatabase(app)
 
 // use
 appPath.use(express.json());
+appPath.use(cors())
 
 // Route Get Data
 appPath.get('/users', (req: Request, res: Response) => {
