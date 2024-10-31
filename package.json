@@ -17,6 +17,7 @@
     "firebase": "^11.0.1"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/firebase": "^2.4.32",
     "@types/node": "^22.8.4",

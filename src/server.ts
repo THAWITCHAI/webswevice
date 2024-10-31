@@ -1,27 +1,28 @@
 import express, { Request, Response } from 'express';
-import { getDatabase, set, ref, get, update, remove, push, } from 'firebase/database'
+import { getDatabase, set, ref, get, update, remove, push } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
-import cors from 'cors
+import cors from 'cors';
 
 const appPath = express();
 const PORT = process.env.PORT || 1234;
 
-// function configure
+// Firebase configuration
 const firebaseConfig = {
     databaseURL: "https://project-healthy-e1b33-default-rtdb.asia-southeast1.firebasedatabase.app/"
-}
-const app = initializeApp(firebaseConfig)
+};
+const app = initializeApp(firebaseConfig);
 
-// GetDatabase Function
-const db = getDatabase(app)
+// Initialize Firebase Database
+const db = getDatabase(app);
 
-// use
+// Middleware
 appPath.use(express.json());
-appPath.use(cors())
+appPath.use(cors());
 
-// Route Get Data
-appPath.get('/users', (req: Request, res: Response) => {
+// Route: Get All Users
+appPath.get('/users', async (req: any, res: any) => {
     try {
+<<<<<<< Updated upstream
         get(ref(db, 'users'))
             .then((users) => {
                 if (!users.exists()) {
@@ -59,68 +60,94 @@ appPath.get('/users/:id', (req: Request, res: Response) => {
             })
     } catch (error) {
         res.status(500).json({ message: 'No Data' })
+=======
+        const snapshot = await get(ref(db, 'users'));
+        if (!snapshot.exists()) {
+            return res.status(404).json({ message: 'No Data' });
+        }
+        res.json(snapshot.val());
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ message: 'Failed to fetch users' });
+>>>>>>> Stashed changes
     }
 });
 
-// Route Post Data
-// Route Post Data
-appPath.post('/users', (req: Request, res: Response) => {
+// Route: Get User by ID
+appPath.get('/users/:id', async (req: any, res: any) => {
     try {
-        const { fullname } = req.body; // set Full Name From Request
-        const newUserRef = push(ref(db, 'users')); // สร้างการอ้างอิงใหม่และ ID อัตโนมัติ
-        const newUserId = newUserRef.key; // รับ ID ที่สร้างขึ้น
+        const id = req.params.id;
+        const snapshot = await get(ref(db, `users/${id}`));
+        if (!snapshot.exists()) {
+            return res.status(404).json({ message: 'No Data' });
+        }
+        res.json(snapshot.val());
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        res.status(500).json({ message: 'Failed to fetch user' });
+    }
+});
 
-        // ตั้งค่าข้อมูลผู้ใช้
-        set(newUserRef, {
+// Route: Create New User
+appPath.post('/users', async (req: any, res: any) => {
+    try {
+        const { fullname } = req.body;
+        const newUserRef = push(ref(db, 'users/'));
+        const newUserId = newUserRef.key;
+        const snapshot = await get(ref(db, 'users'));
+
+        await set(ref(db, 'users'), [{
             id: newUserId,
             name: fullname,
             balance: 100,
             mil: new Date().getTime(),
-            date: new Date() + ''
-        });
+            date: new Date().toString()
+        }]);
 
         res.json({
-            message: `User created successfully`,
-            id: newUserId // ส่งกลับ ID ที่สร้างขึ้น
+            message: 'User created successfully',
+            id: newUserId
         });
     } catch (error) {
+        console.error('Error creating user:', error);
         res.status(500).json({ message: 'Failed to create user' });
     }
 });
 
-
-// Route Update Data
-appPath.put('/users/:id', (req: Request, res: Response) => {
+// Route: Update User
+appPath.put('/users/:id', async (req: any, res: any) => {
     try {
-        const id = req.params.id
-        const data = req.body //set Data From Request
-        update(ref(db, 'users/' + id), data)
+        const id = req.params.id;
+        const data = req.body;
+
+        await update(ref(db, `users/${id}`), data);
 
         res.json({
-            message: `Good`
-        })
+            message: 'User updated successfully'
+        });
     } catch (error) {
-        res.status(500).json({ message: 'Failed to log in' })
+        console.error('Error updating user:', error);
+        res.status(500).json({ message: 'Failed to update user' });
     }
-})
+});
 
-// Route Delete Data
-appPath.delete('/users/:id', (req: Request, res: Response) => {
+// Route: Delete User
+appPath.delete('/users/:id', async (req: any, res: any) => {
     try {
-        const id = req.params.id
-        remove(ref(db, 'users/' + id))
+        const id = req.params.id;
+
+        await remove(ref(db, `users/${id}`));
 
         res.json({
-            message: `Good`
-        })
+            message: 'User deleted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ message: 'Failed to log in' })
+        console.error('Error deleting user:', error);
+        res.status(500).json({ message: 'Failed to delete user' });
     }
-})
+});
 
-
-
-
+// Start the server
 appPath.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
